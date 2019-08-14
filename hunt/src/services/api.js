@@ -1,11 +1,11 @@
 //import axios from "axios";
  
 
-const api = fetch("https://jsonplaceholder.typicode.com/posts")
+const api = page => fetch(`https://jsonplaceholder.typicode.com/posts?_page=${page}`)
 
 //const api = axios.create({
     //baseUrl: "https://jsonplaceholder.typicode.com/posts"
-    //https://rocketseat-node.herokuapp.com/api     
+    //https://rocketseat-node.herokuapp.com/api       
 //});  
 
 

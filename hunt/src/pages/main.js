@@ -9,28 +9,30 @@ export default class Main extends Component {
     };
 
     state = {
-        docs: [],
+        body: [],
     }
 
-    componentDidMount(){
+    page = 1; 
 
+    componentDidMount(){
         this.loadItem();
     }
 
-    loadItem = () => {
+    //carrega os itens da aplicacao
+    loadItem = (page = 1) => {
         //async
         //const response = await api.get('/item'); 
         // const docs = response.data;
 
-        api.then(res => {
-            if (res.status != 200) {
+        api(this.page).then(res => {
+            if (res.status != 200) {  
                 console.log('Error: ' + res.json());
                 return;
             }
             return res.json();
-        }).then(body => {
+        }).then(body => {  
 
-            this.setState({ docs : body })  
+            this.setState({ body : [...this.state.body, ...body]})  //concatenar veterores
             //console.log(body)   
 
         }).catch(e => {
@@ -39,9 +41,19 @@ export default class Main extends Component {
 
         
     }
+    //Chama as proximas paginas da api
+    loadMore = () => {
+        
+        if(this.page <= 10){
+            this.page++;
+            this.loadItem();
+        }
+        
+    }
 
     renderItem = ({ item }) => (
         <View style={styles.itemContainer}>
+            <Text>{item.id}</Text> 
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.body}>{item.body}</Text> 
             
@@ -56,9 +68,11 @@ export default class Main extends Component {
             <View style={styles.container}>
                 <FlatList  
                     contentContainerStyle={styles.list}
-                    data={this.state.docs}
+                    data={this.state.body}
                     keyExtractor={item => item.id}
                     renderItem={this.renderItem}
+                    onEndReached={this.loadMore}
+                    onEndReachedThreshold={0.2}
                 />
                 {/* <Text>Main Page: </Text>
                 {this.state.docs.map(prod => (
